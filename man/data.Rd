@@ -2,13 +2,20 @@
 % Please edit documentation in R/data.R
 \name{HADSST}
 \alias{HADSST}
-\title{HadSST data}
+\alias{CMAP}
+\title{Data for this paper}
 \usage{
 HADSST()
+
+CMAP()
 }
 \description{
-Returns the location of the HadSST file location, downloading the data from
-the MetOffice website if needed.
+Returns the location of the datasets used on this paper, downloading the files
+if needed.
+}
+\details{
+HadSST is downloaded from the MetOffice website.
+CMAP is downloaded from NOAA's Physical Sciences Laboratory FTP
 }
 \references{
 Rayner, N. A.; Parker, D. E.; Horton, E. B.; Folland, C. K.; Alexander, L. V.; Rowell, D. P.; Kent, E. C.; Kaplan, A. (2003) Global analyses of sea surface temperature, sea ice, and night marine air temperature since the late nineteenth century J. Geophys. Res.Vol. 108, No. D14, 4407 10.1029/2002JD002670
