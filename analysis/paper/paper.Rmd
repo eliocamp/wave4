@@ -120,22 +120,6 @@ corrs <- sst %>%
 ```
 
 
-```{r corrs-map, fig.cap = "corelations"}
-corrs %>% 
-  ggplot(aes(lon, lat)) +
-  geom_contour_fill(aes(z = -correlation*sign, fill = ..level..), breaks = AnchorBreaks(0, 0.2)) +
-  quick_map() +
-  geom_point(data = copy(points)[, id := NULL], shape = 21, fill = NA) +
-  geom_point(data = copy(points), shape = 21, color = "black", fill =  "#de3e80") +
-  # geom_text(data = copy(points)[, lab := id][, id := NULL], aes(label = lab)) +
-  scale_fill_divergent_discretised("Correlation", limits = c(-1, 1),
-                                   guide = guide_colorsteps_bottom()) +
-  facet_grid(id~.)
-```
-
-Figure \@ref(fig:corrs-map) reproduces SDB21's Figure 2 and show correlation maps of SST (with the leading EOF filtered out and with every other map with opposite sign) for the seven points of interest defined by SDB21, which are marked with dots. We believe that these maps are nowhere near as definitive in confirming the global nature of the wave-4 pattern. As pointed out by SDB21, SSTs South of Australia (point vii) shows virtually no relationship with any of the other points. But further than that, we see that the first tree points, located in the Pacific, are relatively well connected within each other but not nearly as much with the rest. This is further illustrated by Figure \@ref(fig:r2) which shows the explained variance of SST by the SST of each point. Points in the Pacific explain up to 40% of the variance of SST in some areas, while points in the other basins can barely explain 10% of the variance of the rest of global SST anomalies. 
-
-
 
 ```{r bootstrap}
 set.seed(42)
@@ -159,28 +143,28 @@ random_cors <- vapply(seq_len(N), function(i) {
 ```
 
 
-(ref:r2-cap) Coefficient of determination ($r^2$) computed from the correlations with the filtered SST in Figure \@ref(fig:corrs-map). Contours only show areas with $r^2 > 0.1$. Black contour marks the 20% level, which is the median $r^2$ of the minimum correlation in correlation maps computed using `r N` random points. 
 
-```{r r2, fig.cap = "(ref:r2-cap)"}
+```{r corrs-map, fig.cap = "corelations"}
 corrs %>% 
   ggplot(aes(lon, lat)) +
-  geom_contour_fill(aes(z = correlation^2, 
-                        fill = ..level..), breaks = seq(0, 1, by = 0.05)) +
-  geom_contour2(aes(z = correlation^2), breaks = quantile(random_cors^2, .5), size = 0.2) +
+  geom_contour_fill(aes(z = -correlation*sign, fill = ..level..), breaks = AnchorBreaks(0, 0.2)) +
+  geom_contour2(aes(z = abs(correlation)), breaks = quantile(abs(random_cors), .5), size = 0.25) +
   quick_map() +
   geom_point(data = copy(points)[, id := NULL], shape = 21, fill = NA) +
   geom_point(data = copy(points), shape = 21, color = "black", fill =  "#de3e80") +
-  scale_fill_viridis_c("r2", oob = scales::squish, 
-                       guide = guide_colorsteps_bottom(),
-                       super = ScaleDiscretised) +
+  # geom_text(data = copy(points)[, lab := id][, id := NULL], aes(label = lab)) +
+  scale_fill_divergent_discretised("Correlation", limits = c(-1, 1),
+                                   guide = guide_colorsteps_bottom()) +
   facet_grid(id~.)
 ```
 
-To better quantify how significant are the levels of connectivity shown in Figure \@ref(fig:r2), we computed the $r^2$ corresponding to the minimum correlation on correlation maps of 500 random points. The median explained variance `r scales::percent(quantile(random_cors^2, 0.5))` and 95% of random points had a coefficient of determination greater than `r scales::percent(quantile(random_cors^2, .95))`. With this in mind, values of the order of 20% in Figure \@ref(fig:r2) are on the order of what would be expected by chance. 
+Figure \@ref(fig:corrs-map) reproduces SDB21's Figure 2 and show correlation maps of SST (with the leading EOF filtered out and with every other map with opposite sign) for the seven points of interest defined by SDB21, which are marked with dots. We believe that these maps are nowhere near as definitive in confirming the global nature of the wave-4 pattern. As pointed out by SDB21, SSTs South of Australia (point vii) shows virtually no relationship with any of the other points. But further than that, we see that the first tree points, located in the Pacific, are relatively well connected within each other but not nearly as much with the rest. 
 
-Figures \@ref(fig:corrs-map) and \@ref(fig:r2) do show that there are some relationships between regions and that the pattern of that relationship has a wave-4 structure. We are not saying that these relationships don't necessarily exist, but that they are not indicative of a globally coherent wave-4 oscillation. Rather, they are more indicative of separate but not independent phenomena. 
+To better quantify how significant are the levels of connectivity shown in Figure \@ref(fig:corrs-map), we computed `r N` correlation maps corresponding to random points and computed the magnitude of the minimum correlation for each as a measure of connectedness. The median absolute value of the minimum correlation is `r signif(quantile(abs(random_cors), 0.5), 2)` (marked with black contours in Figure  \@ref(fig:corrs-map)) and 95% of random points had minimum correlations with absolute values larger than `r signif(quantile(abs(random_cors), 0.95), 2)`. With this in mind, correlations of the order of $\pm `r signif(quantile(abs(random_cors), 0.5), 2)`$ are not surprising and what would be expected by chance alone. This, of course, is only a crude measure since it doesn't take into account the size or pattern of correlations correlations, but we think that it should give some perspective to the real significance to the correlation levels shown here. 
 
-This distinction further motivates us in splitting the wave-4 pattern into the Pacific basin (between 155°E and 290°E) and the Atlantic-Indian basins (the rest of the hemisphere). Then, we project each pattern onto the corresponding SST fields to get two indices. If the patterns is really coherent in time, then both indices must be strongly correlated. Figure \@ref(fig:indices) shows the relationship between the two indices (scales by their respective standard deviations). Again, while they are certainly not independent their correlation is only modest. 
+Figure \@ref(fig:corrs-map) does show that there is some relationships between regions and that the pattern of that relationship has a wave-4 structure. We are not necessarily saying that these relationships don't exist, but that they are not indicative of a globally coherent wave-4 oscillation. Rather, they are more indicative of separate but not independent phenomena. 
+
+Since the correlation maps in Figure \@ref(fig:corrs-map) suggests some level of coherence in the Pacific ocean region, we decided to split the wave-4 pattern into the Pacific basin (between 155°E and 290°E) and the Atlantic-Indian basins (the rest of the hemisphere). Then, we project each pattern onto the corresponding SST fields to get two indices. If the patterns is really coherent in time, then both indices must be strongly correlated. Figure \@ref(fig:indices) shows the relationship between the two indices (scales by their respective standard deviations). Again, while they are certainly not independent their correlation is only modest. 
 
 
 ```{r make_basin}
