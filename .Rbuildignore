@@ -1,3 +1,5 @@
+^renv$
+^renv\.lock$
 ^wave4\.Rproj$
 ^\.Rproj\.user$
 analysis

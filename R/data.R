@@ -16,6 +16,11 @@ HADSST <- function() {
   had_file <- here::here("analysis", "data", "raw_data", "hadsst.nc")
 
   if (!file.exists(had_file)) {
+    dir <- here::here("analysis", "data", "raw_data")
+    if (!dir.exists(dir)) {
+      dir.create(dir, recursive = TRUE)
+    }
+
     message("Downloading data...")
     hadsst <- "https://www.metoffice.gov.uk/hadobs/hadisst/data/HadISST_sst.nc.gz"
     had_zip <- tempfile()
@@ -32,7 +37,9 @@ HADSST <- function() {
 #' @export
 #' @rdname data
 CMAP <- function() {
-  file <-  here::here("analysis", "data", "raw_data", "CMAP.nc")
+
+
+  file <- here::here("analysis", "data", "raw_data", "CMAP.nc")
   if (!file.exists(file)) {
     message("Downloading data...")
 
@@ -45,7 +52,10 @@ CMAP <- function() {
     # urls <- rvest::html_attr(links, "href")
     #
     # url <- urls[text == "FTP a copy of the file"]
-
+    dir <- here::here("analysis", "data", "raw_data")
+    if (!dir.exists(dir)) {
+      dir.create(dir, recursive = TRUE)
+    }
     url <- "ftp://ftp2.psl.noaa.gov/Public/www/X190.245.61.250.18.6.27.31.nc"
 
     download.file(url, file, mode = "wb")
