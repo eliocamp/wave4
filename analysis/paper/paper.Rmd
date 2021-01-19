@@ -6,6 +6,7 @@ date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: 
     bookdown::pdf_document2:
       toc: no
+      number_sections: no
 bibliography: bibliography.bib
 ---
 
@@ -345,10 +346,10 @@ patterns_k <- series_k %>%
 ```
 
 
-(ref:patterns_k2-cap) Correlation maps between SST and each of the three basin-dependend wave-4 index. Overlayed in gray, the tree distinct areas of shared variability identified in Figure \@ref(fig:cor-pairwise) by hierarchical clustering and selecting 3 clusters.
+(ref:patterns-k2-cap) Correlation maps between SST and each of the three basin-dependend wave-4 index. Overlayed in gray, the tree distinct areas of shared variability identified in Figure \@ref(fig:cor-pairwise) by hierarchical clustering and selecting 3 clusters.
 
 
-```{r patterns_k2, fig.cap = "(ref:patterns_k2-cap)"}
+```{r patterns-k2, fig.cap = "(ref:patterns-k2-cap)"}
 patterns_k %>% 
   ggplot(aes(lon, lat)) +
   geom_contour_fill(aes(z = -correlation, fill = ..level..), 
@@ -358,7 +359,9 @@ patterns_k %>%
               alpha = 0.2) +
   scale_fill_divergent_discretised("Correlation", limits = c(-1, 1), guide = guide_colorsteps_bottom()) +
   facet_wrap(k~., ncol = 1, labeller = labeller(k = label_k))
+
 ```
+
 Correlation maps between SST anomalies and each of the three indices are shown in Figure \@ref(fig:patterns_k). Inside the area used to define each index correlation are high and the pattern is well defined, as expected by construction. However, outside those areas, there is very little signal. 
 
 
